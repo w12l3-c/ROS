@@ -22,6 +22,10 @@ class RotationalJoint():
             [t*x*z - s*y, t*y*z + s*x, t*z*z + c, 0],
             [0, 0, 0, 1]
         ])
+    
+    def update_angle(self, angle):
+        self.angle = angle
+        self.matrix = self.get_matrix()
 
 
 class PrismaticJoint():
@@ -41,6 +45,10 @@ class PrismaticJoint():
             [0, 0, 1, z*distance],
             [0, 0, 0, 1]
         ])
+    
+    def update_distance(self, distance):
+        self.distance = distance
+        self.matrix = self.get_matrix()
     
 class Links():
     def __init__(self, length, alpha, a, d):
@@ -81,8 +89,8 @@ class SimpleLinks():
     # DH Matrix
     def get_matrix(self):
         return np.array([
-            [0, 0, 0, self.x],
-            [0, 0, 0, self.y],
+            [1, 0, 0, self.x],
+            [0, 1, 0, self.y],
             [0, 0, 1, self.z],
             [0, 0, 0, 1]
         ])
@@ -92,10 +100,11 @@ def calculate_dh_matrix(links, joints, movement, mvmt_joint):
     transformation_matrices = []
     accumulated_matrix = np.eye(4)
 
-    for joint in joints:
+    for i, joint in enumerate(joints):
         joint_matrix = joint.matrix
+        link_matrix = links[i].matrix
         # mvmt * A1 * A2 * A3 * ... * An
-        accumulated_matrix = np.dot(accumulated_matrix, joint_matrix) # Order matters
+        accumulated_matrix = multi_dot([accumulated_matrix, link_matrix, joint_matrix]) # Order matters
         transformation_matrices.append(accumulated_matrix)
 
     return transformation_matrices
