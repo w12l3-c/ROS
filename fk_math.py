@@ -1,10 +1,12 @@
 import numpy as np
 import math
+from numpy.linalg import inv, multi_dot
 
 class RotationalJoint():
     def __init__(self, axis, angle):
         self.axis = axis
         self.angle = angle
+        self.matrix = self.get_matrix()
 
     def get_matrix(self):
         axis = self.axis
@@ -26,6 +28,7 @@ class PrismaticJoint():
     def __init__(self, axis, distance):
         self.axis = axis
         self.distance = distance
+        self.matrix = self.get_matrix()
 
     def get_matrix(self):
         axis = self.axis
@@ -38,18 +41,67 @@ class PrismaticJoint():
             [0, 0, 1, z*distance],
             [0, 0, 0, 1]
         ])
+    
+class Links():
+    def __init__(self, length, alpha, a, d):
+        self.length = length
+        self.alpha = alpha
+        self.a = a
+        self.d = d
+        self.matrix = self.get_matrix()
+
+    # DH Matrix
+    def get_matrix(self):
+        length = self.length
+        alpha = self.alpha
+        a = self.a
+        d = self.d
+
+        c_alpha = math.cos(alpha)
+        s_alpha = math.sin(alpha)
+
+        return np.array([
+            [c_alpha, -s_alpha, 0, a],
+            [s_alpha*c_alpha, c_alpha*c_alpha, -s_alpha, -s_alpha*d],
+            [s_alpha*s_alpha, c_alpha*s_alpha, c_alpha, c_alpha*d],
+            [0, 0, 0, 1]
+        ])
+    
+class SimpleLinks():
+    def __init__(self, length, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.length = length
+
+        assert x^2 + y^2 + z^2 == length^2, "Invalid link length"
+
+        self.matrix = self.get_matrix()
+
+    # DH Matrix
+    def get_matrix(self):
+        return np.array([
+            [0, 0, 0, self.x],
+            [0, 0, 0, self.y],
+            [0, 0, 1, self.z],
+            [0, 0, 0, 1]
+        ])
 
 
-def calculate_dh_matrix(joints, movement):
+def calculate_dh_matrix(links, joints, movement, mvmt_joint):
     transformation_matrices = []
-    accumulated_matrix = np.dot(movement.get_matrix(), np.eye(4)) # Movement Matrix
+    accumulated_matrix = np.eye(4)
 
     for joint in joints:
-        joint_matrix = joint.get_matrix()
-        accumulated_matrix = np.dot(joint_matrix, accumulated_matrix)
+        joint_matrix = joint.matrix
+        # mvmt * A1 * A2 * A3 * ... * An
+        accumulated_matrix = np.dot(accumulated_matrix, joint_matrix) # Order matters
         transformation_matrices.append(accumulated_matrix)
 
     return transformation_matrices
+
+
+
 
 
 
