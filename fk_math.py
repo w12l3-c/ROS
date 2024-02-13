@@ -104,6 +104,11 @@ def calculate_dh_matrix(links, joints, movement, mvmt_joint):
         joint_matrix = joint.matrix
         link_matrix = links[i].matrix
         # mvmt * A1 * A2 * A3 * ... * An
+        if i == mvmt_joint:
+            if isinstance(joint, RotationalJoint):
+                joint_matrix = joint.update_angle(movement).matrix
+            elif isinstance(joint, PrismaticJoint):
+                joint_matrix = joint.update_distance(movement).matrix
         accumulated_matrix = multi_dot([accumulated_matrix, link_matrix, joint_matrix]) # Order matters
         transformation_matrices.append(accumulated_matrix)
 
