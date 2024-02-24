@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from math import cos, sin, tan, sqrt
 from numpy.linalg import inv, multi_dot
 
 class RotationalJoint():
@@ -75,14 +76,15 @@ class Links():
             [0, 0, 0, 1]
         ])
     
-class SimpleLinks():
+class LinearLinks():
     def __init__(self, length, x, y, z):
+        # Origin of the Link relative to base
         self.x = x
         self.y = y
         self.z = z
-        self.length = length
 
-        assert x^2 + y^2 + z^2 == length^2, "Invalid link length"
+        # Length of the Link
+        self.length = length
 
         self.matrix = self.get_matrix()
 
@@ -103,16 +105,46 @@ def calculate_dh_matrix(links, joints, movement, mvmt_joint):
     for i, joint in enumerate(joints):
         joint_matrix = joint.matrix
         link_matrix = links[i].matrix
+
         # mvmt * A1 * A2 * A3 * ... * An
         if i == mvmt_joint:
             if isinstance(joint, RotationalJoint):
-                joint_matrix = joint.update_angle(movement).matrix
+                joint.update_angle(movement)
+                joint_matrix = joint.matrix
             elif isinstance(joint, PrismaticJoint):
-                joint_matrix = joint.update_distance(movement).matrix
+                joint.update_distance(movement)
+                joint_matrix = joint.matrix
+        
         accumulated_matrix = multi_dot([accumulated_matrix, link_matrix, joint_matrix]) # Order matters
         transformation_matrices.append(accumulated_matrix)
 
     return transformation_matrices
+
+
+if __name__ == '__main__':
+    links = [
+        LinearLinks(1, 0, 0, 0),
+        LinearLinks(1, 0, 0, 1),
+        LinearLinks(1, 0, 1, 1),
+        LinearLinks(1, 0, 2, 1)
+    ]
+
+    joints = [
+        RotationalJoint([0, 0, 1], 0),
+        RotationalJoint([0, 1, 0], 0),
+        RotationalJoint([0, 1, 0], 0),
+        RotationalJoint([0, 1, 0], 0)
+    ]
+
+    movement = 60
+    mvmt_joint = 1
+
+    transformation_matrices = calculate_dh_matrix(links, joints, movement, mvmt_joint)
+
+
+    for i in transformation_matrices:
+        print(i)
+    print(transformation_matrices[-1])  # End effector's pose
 
 
 
