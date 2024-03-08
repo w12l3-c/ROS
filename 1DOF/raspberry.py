@@ -24,55 +24,57 @@ print("Starting motor is LOW and Forward")
 while True:
     try:
         key = input()
-        
-        if x=='r':
+
+        if key=='r':
             print("run")
             if(temp1==1):
                 GPIO.output(IN1,GPIO.HIGH)
                 GPIO.output(IN2,GPIO.LOW)
                 print("forward")
-                x='z'
+                key='z'
             else:
                 GPIO.output(IN1,GPIO.LOW)
                 GPIO.output(IN2,GPIO.HIGH)
                 print("backward")
-                x='z'
+                key='z'
 
 
-        elif x=='s':
+        elif key=='s':
             print("stop")
             GPIO.output(IN1,GPIO.LOW)
             GPIO.output(IN2,GPIO.LOW)
-            x='z'
+            key='z'
 
-        elif x=='f':
+        elif key=='f':
             print("forward")
             GPIO.output(IN1,GPIO.HIGH)
             GPIO.output(IN2,GPIO.LOW)
             temp1 = 1
-            x='z'
+            key='z'
 
-        elif x=='b':
+        elif key=='b':
             print("backward")
             GPIO.output(IN1,GPIO.LOW)
             GPIO.output(IN2,GPIO.HIGH)
             temp1 = 0
-            x='z'
+            key='z'
 
-        elif x=='l':
+        elif key=='l':
             print("low")
             p.ChangeDutyCycle(25)
-            x='z'
+            key='z'
 
-        elif x=='m':
+        elif key=='m':
             print("medium")
             p.ChangeDutyCycle(50)
-            x='z'
+            key='z'
 
-        elif x=='h':
+        elif key=='h':
             print("high")
             p.ChangeDutyCycle(75)
-            x='z'
+            key='z'
+        else:
+            print("<<<  wrong data  >>>")
         
         
     except KeyboardInterrupt:
