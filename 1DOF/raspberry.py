@@ -6,6 +6,7 @@ import os
 IN1 = 24
 IN2 = 23
 ENA = 25
+TEST = 16
 temp1 = 1
 
 
@@ -13,8 +14,10 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(IN1, GPIO.OUT)
 GPIO.setup(IN2, GPIO.OUT)
 GPIO.setup(ENA, GPIO.OUT)
+GPIO.setup(TEST, GPIO.OUT)
 GPIO.output(IN1, GPIO.LOW)
 GPIO.output(IN2, GPIO.LOW)
+GPIO.output(TEST, GPIO.HIGH)    # Debug RaspberryPi
 
 
 p = GPIO.PWM(ENA, 1000)
