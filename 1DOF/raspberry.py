@@ -15,6 +15,8 @@ GPIO.setup(IN2, GPIO.OUT)
 GPIO.setup(ENA, GPIO.OUT)
 GPIO.output(IN1, GPIO.LOW)
 GPIO.output(IN2, GPIO.LOW)
+
+
 p = GPIO.PWM(ENA, 1000)
 
 p.start(25)
