@@ -1,0 +1,40 @@
+<launch>
+
+    <!-- Load the URDF file -->
+    <!-- <param name="robot_description" command="cat $(find sim)/urdf/arm.urdf" /> -->
+    <param name="robot_description" command="$(find xacro)/xacro '$(find sim)/urdf/arm.xacro'" />
+
+    <!-- Load controller configurations -->
+    <rosparam file="$(find sim)/config/controller.yaml" command="load"/>
+    
+    <!-- Load the Gazebo simulator -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find sim)/worlds/world.world"/>
+    </include>
+    
+    <!-- Spawn the robot in Gazebo -->
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model arm -param robot_description -x 0 -y 0 -z 0.2" />
+
+    <!-- Launch the controller manager -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" ns="/arm"
+        args="  joint_state_controller 
+                b_joint_position_controller 
+                m_joint_position_controller 
+                t_joint_position_controller" 
+
+        respawn="false" output="screen"/>
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+        respawn="false" output="screen">
+        <remap from="/joint_states" to="/arm/joint_states" />
+    </node>
+
+</launch>
+
+<!-- 
+Replace your_package_name, your_robot.urdf.xacro, 
+and your_robot_model with your actual package name, 
+URDF filename (if you're using .xacro, make sure to convert it to 
+.urdf or directly use .urdf), 
+and the model name you wish to use in Gazebo.
+-->

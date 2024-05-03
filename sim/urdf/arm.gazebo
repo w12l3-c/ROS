@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<robot>
+
+  <!-- ros_control plugin -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/arm</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+    </plugin>
+  </gazebo>
+
+  <!-- Base Link -->
+  <gazebo reference="RoboticARM_-_Base-2_Base_bottom-1_link">
+    <material>Gazebo/Orange</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <dampingFactor>1</dampingFactor>
+    <selfCollide>false</selfCollide>
+  </gazebo>
+
+  <!-- Gripper Link -->
+  <gazebo reference="RoboticARM_-_Gripper-1_Gripper_base-1_link">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <dampingFactor>0.4</dampingFactor>
+    <selfCollide>true</selfCollide>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <!-- 1st Link -->
+  <gazebo reference="RoboticARM_-_Link1-1_link">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <dampingFactor>0.4</dampingFactor>
+    <selfCollide>true</selfCollide>
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+  <!-- 2nd link -->
+  <gazebo reference="RoboticARM_-_Link2-1_link">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <dampingFactor>0.4</dampingFactor>
+    <selfCollide>true</selfCollide>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+</robot>

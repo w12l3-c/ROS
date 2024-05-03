@@ -1,0 +1,24 @@
+arm:
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  b_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: b_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+
+  m_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: m_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+
+  t_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: t_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+
+# gazebo_ros_control:
+#   pid_gains: {b_joint: {p: 100.0, i: 0.01, d: 10.0},
+#               m_joint: {p: 100.0, i: 0.01, d: 10.0},
+#               t_joint: {p: 100.0, i: 0.01, d: 10.0}}
